@@ -87,8 +87,8 @@ export function LoginIllustration() {
           bottom: 16,
           width: 210,
           p: 2,
-          border: '1px solid #E5E7EB',
-          borderRadius: 5,
+          border: '1px solid #000000',
+          borderRadius: 2,
           boxShadow: '0 8px 12px rgba(0, 0, 0, 0.06)',
           zIndex: 2,
         }}

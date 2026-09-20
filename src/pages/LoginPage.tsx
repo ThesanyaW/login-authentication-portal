@@ -22,7 +22,7 @@ export function LoginPage() {
     <Box
       component="main"
       sx={{
-        minHeight: '100vh',
+        height: '100vh',
         display: 'flex',
         gap: 4,
         p: { xs: 3, md: 4 },
@@ -44,7 +44,7 @@ export function LoginPage() {
             width: '100%',
             maxWidth: 540,
             px: { xs: 0, sm: 4, lg: 8 },
-            py: { xs: 3, md: 6 },
+            py: { xs: 2, md: 3, lg: 4 },
           }}
         >
           <Stack spacing={2} sx={{ textAlign: 'center' }}>
@@ -171,10 +171,9 @@ export function LoginPage() {
           elevation={0}
           sx={{
             width: '100%',
-            minHeight: 836,
+            height: '100%',
             px: 6,
-            pt: 8,
-            pb: 6,
+            py: 4,
             borderRadius: 8,
             bgcolor: '#F1F8F4',
             display: 'flex',
