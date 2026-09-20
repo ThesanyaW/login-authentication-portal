@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import {
   Box,
   Button,
@@ -15,14 +15,77 @@ import facebookIcon from '../assets/login/facebook.svg';
 import xIcon from '../assets/login/circle-x.svg';
 import paginationRow from '../assets/login/pagination-row.png';
 
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
+type LoginFormErrors = Partial<Record<keyof LoginFormValues, string>>;
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function LoginPage() {
+  const [values, setValues] = useState<LoginFormValues>({
+    email: '',
+    password: '',
+  });
+
+  const [errors, setErrors] = useState<LoginFormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (
+    field: keyof LoginFormValues,
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { value } = event.target;
+
+    setValues((currentValues) => ({
+      ...currentValues,
+      [field]: value,
+    }));
+
+    setErrors((currentErrors) => ({
+      ...currentErrors,
+      [field]: undefined,
+    }));
+  };
+
+  const validateForm = () => {
+    const nextErrors: LoginFormErrors = {};
+
+    if (!values.email.trim()) {
+      nextErrors.email = 'Email address is required.';
+    } else if (!emailPattern.test(values.email.trim())) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+
+    if (!values.password) {
+      nextErrors.password = 'Password is required.';
+    } else if (values.password.length < 8) {
+      nextErrors.password = 'Password must be at least 8 characters.';
+    }
+
+    setErrors(nextErrors);
+
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    // The form is valid. Backend authentication will be added later.
+    console.info('Login form is valid.');
+  };
 
   return (
     <Box
       component="main"
       sx={{
-        height: '100vh',
+        minHeight: '100vh',
         display: 'flex',
         gap: 4,
         p: { xs: 3, md: 4 },
@@ -39,6 +102,8 @@ export function LoginPage() {
       >
         <Stack
           component="form"
+          noValidate
+          onSubmit={handleSubmit}
           spacing={4}
           sx={{
             width: '100%',
@@ -80,11 +145,26 @@ export function LoginPage() {
           </Stack>
 
           <Stack spacing={2}>
-            <LoginField placeholder="Username" />
+            <LoginField
+              name="email"
+              placeholder="Email address"
+              type="email"
+              autoComplete="email"
+              value={values.email}
+              error={Boolean(errors.email)}
+              helperText={errors.email}
+              onChange={(event) => handleChange('email', event)}
+            />
 
             <LoginField
+              name="password"
               placeholder="Password"
               type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={values.password}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              onChange={(event) => handleChange('password', event)}
               hasPasswordToggle
               passwordVisible={showPassword}
               onTogglePassword={() => setShowPassword((visible) => !visible)}
@@ -108,6 +188,7 @@ export function LoginPage() {
 
           <Stack spacing={3} sx={{ alignItems: 'center' }}>
             <Button
+              type="submit"
               fullWidth
               variant="contained"
               disableElevation
@@ -145,7 +226,10 @@ export function LoginPage() {
             <Stack direction="row" spacing={2}>
               <SocialLoginButton label="Continue with X" icon={xIcon} />
               <SocialLoginButton label="Continue with Apple" icon={appleIcon} />
-              <SocialLoginButton label="Continue with Facebook" icon={facebookIcon} />
+              <SocialLoginButton
+                label="Continue with Facebook"
+                icon={facebookIcon}
+              />
             </Stack>
           </Stack>
 
@@ -171,7 +255,7 @@ export function LoginPage() {
           elevation={0}
           sx={{
             width: '100%',
-            height: '100%',
+            minHeight: '100%',
             px: 6,
             py: 4,
             borderRadius: 8,
@@ -199,7 +283,7 @@ export function LoginPage() {
             }}
           >
             Make your work easier and organized with{' '}
-              <Box component="span" sx={{ fontWeight: 800 }}>
+            <Box component="span" sx={{ fontWeight: 800 }}>
               Tuga&apos;s App
             </Box>
           </Typography>
