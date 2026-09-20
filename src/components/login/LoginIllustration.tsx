@@ -2,7 +2,7 @@ import { Box, Paper, Stack, Typography, type SxProps, type Theme } from '@mui/ma
 import characterImage from '../../assets/login/main-character-illustration.png';
 import avatarOne from '../../assets/login/avatar-1.png';
 import avatarTwo from '../../assets/login/avatar-2.png';
-import progressDonut from '../../assets/login/progress-donut.svg';
+import progressDonut from '../../assets/login/progress-donut.png';
 
 type AvatarProps = {
   image: string;

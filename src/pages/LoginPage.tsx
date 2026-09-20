@@ -13,7 +13,7 @@ import { SocialLoginButton } from '../components/login/SocialLoginButton';
 import appleIcon from '../assets/login/apple.svg';
 import facebookIcon from '../assets/login/facebook.svg';
 import xIcon from '../assets/login/circle-x.svg';
-import paginationRow from '../assets/login/pagination-row.svg';
+import paginationRow from '../assets/login/pagination-row.png';
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
