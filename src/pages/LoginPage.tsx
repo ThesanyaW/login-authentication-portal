@@ -7,12 +7,15 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import { LoginField } from '../components/login/LoginField';
 import { LoginIllustration } from '../components/login/LoginIllustration';
 import { SocialLoginButton } from '../components/login/SocialLoginButton';
+import { auth, googleProvider } from '../config/firebase';
 import appleIcon from '../assets/login/apple.svg';
 import facebookIcon from '../assets/login/facebook.svg';
-import xIcon from '../assets/login/circle-x.svg';
+import googleIcon from '../assets/login/google.svg';
 import paginationRow from '../assets/login/pagination-row.png';
 
 type LoginFormValues = {
@@ -25,6 +28,8 @@ type LoginFormErrors = Partial<Record<keyof LoginFormValues, string>>;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginPage() {
+  const navigate = useNavigate();
+
   const [values, setValues] = useState<LoginFormValues>({
     email: '',
     password: '',
@@ -32,6 +37,8 @@ export function LoginPage() {
 
   const [errors, setErrors] = useState<LoginFormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [googleError, setGoogleError] = useState('');
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleChange = (
     field: keyof LoginFormValues,
@@ -77,8 +84,35 @@ export function LoginPage() {
       return;
     }
 
-    // The form is valid. Backend authentication will be added later.
+    // Email/password backend authentication will be added later.
     console.info('Login form is valid.');
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleError('');
+    setIsGoogleLoading(true);
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const accessToken = credential?.accessToken;
+
+      if (!accessToken) {
+        setGoogleError(
+          'Google sign-in succeeded, but no access token was returned.',
+        );
+        return;
+      }
+
+      navigate('/access-token', {
+        replace: true,
+        state: { accessToken },
+      });
+    } catch {
+      setGoogleError('Unable to sign in with Google. Please try again.');
+    } finally {
+      setIsGoogleLoading(false);
+    }
   };
 
   return (
@@ -127,17 +161,10 @@ export function LoginPage() {
 
             <Typography
               color="text.secondary"
-              sx={{
-                fontSize: 16,
-                lineHeight: 1.5,
-              }}
+              sx={{ fontSize: 16, lineHeight: 1.5 }}
             >
               Simplify your workflow and boost your productivity with{' '}
-              <Box
-                component="span"
-                color="text.primary"
-                sx={{ fontWeight: 700 }}
-              >
+              <Box component="span" color="text.primary" sx={{ fontWeight: 700 }}>
                 Tuga&apos;s App
               </Box>
               . Get started for free.
@@ -199,10 +226,7 @@ export function LoginPage() {
                 fontWeight: 700,
                 textTransform: 'none',
                 bgcolor: '#111111',
-
-                '&:hover': {
-                  bgcolor: '#2A2A2A',
-                },
+                '&:hover': { bgcolor: '#2A2A2A' },
               }}
             >
               Login
@@ -224,13 +248,29 @@ export function LoginPage() {
             </Stack>
 
             <Stack direction="row" spacing={2}>
-              <SocialLoginButton label="Continue with X" icon={xIcon} />
-              <SocialLoginButton label="Continue with Apple" icon={appleIcon} />
+              <SocialLoginButton
+                label="Continue with Google"
+                icon={googleIcon}
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
+              />
+              <SocialLoginButton
+                label="Continue with Apple"
+                icon={appleIcon}
+                disabled={isGoogleLoading}
+              />
               <SocialLoginButton
                 label="Continue with Facebook"
                 icon={facebookIcon}
+                disabled={isGoogleLoading}
               />
             </Stack>
+
+            {googleError && (
+              <Typography color="error" sx={{ fontSize: 14, textAlign: 'center' }}>
+                {googleError}
+              </Typography>
+            )}
           </Stack>
 
           <Typography
