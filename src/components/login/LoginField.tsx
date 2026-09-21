@@ -4,7 +4,8 @@ import {
   TextField,
   type TextFieldProps,
 } from '@mui/material';
-import eyeIcon from '../../assets/login/eye.svg';
+import closedEyeIcon from '../../assets/login/closed-eye.svg';
+import openEyeIcon from '../../assets/login/open-eye.svg';
 
 type LoginFieldProps = TextFieldProps & {
   hasPasswordToggle?: boolean;
@@ -32,7 +33,12 @@ export function LoginField({
                 edge="end"
                 onClick={onTogglePassword}
               >
-                <img src={eyeIcon} alt="" width="20" height="20" />
+                <img
+                  src={passwordVisible ? openEyeIcon : closedEyeIcon}
+                  alt=""
+                  width="20"
+                  height="20"
+                />
               </IconButton>
             </InputAdornment>
           ) : undefined,
