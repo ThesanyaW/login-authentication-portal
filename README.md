@@ -24,7 +24,7 @@ A responsive login UI built with React, Vite, TypeScript, and Material UI.
 
 ## Project Structure
 
-````text
+```text
 src/
 ├── assets/
 │   └── login/
@@ -41,10 +41,11 @@ src/
 ├── App.tsx
 ├── main.tsx
 └── theme.ts
+```
 
 ## Run Locally
 
 ```bash
 npm install
 npm run dev
-````
+```
