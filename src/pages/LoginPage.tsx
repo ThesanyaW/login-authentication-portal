@@ -283,7 +283,10 @@ export function LoginPage() {
             }}
           >
             Not a member?{' '}
-            <Box component="span" color="success.main" sx={{ fontWeight: 700 }}>
+            <Box
+              component="span"
+              sx={{ color: 'success.main', fontWeight: 700 }}
+            >
               Register now
             </Box>
           </Typography>
